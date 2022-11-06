@@ -15,13 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        factory(Flight::class, 2)->create();
+        Flight::factory(50)->create();
         // $this->call(FlightSeeder::class);
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
     }
 }
