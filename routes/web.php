@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TodoController;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\ImageUploadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +18,14 @@ use App\Http\Controllers\FrontendController;
 
 Route::controller(FrontendController::class)->group(function () {
     Route::get('/', 'index')->name('front.index');
+});
+
+Route::controller(ImageUploadController::class)->group(function () {
+    Route::get('/image-upload', 'create')->name('front.image-upload.show');
+    Route::post('/image-upload-submit', 'store')->name('fron.image-upload.store');
+});
+
+Route::controller(TodoController::class)->group(function () {
+    Route::get('/todo', 'index')->name('todo.index');
+    Route::post('/todo', 'store')->name('todo.store');
 });

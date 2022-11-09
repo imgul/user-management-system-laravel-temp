@@ -7,8 +7,9 @@ use App\Models\Flight;
 
 class FrontendController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         $flights = Flight::all();
-        return view('front.index', compact('flights'));
+        return view('front.pages.customers-db', compact('flights'));
     }
 }
