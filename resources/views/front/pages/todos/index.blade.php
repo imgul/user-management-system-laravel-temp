@@ -21,10 +21,11 @@
                         <th>ID</th>
                         <th>Title</th>
                         <th>Description</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="todos-list" name="todos-list">
-                    @forelse ($todos as $data)
+                <tbody id="todo-list" name="todos-list">
+                    {{-- @forelse ($todos as $data)
                         <tr id="todo{{ $data->id }}">
                             <td>{{ $data->id }}</td>
                             <td>{{ $data->title }}</td>
@@ -34,7 +35,7 @@
                         <tr>
                             <td colspan="3" class="text-center fs-4">No data found</td>
                         </tr>
-                    @endforelse
+                    @endforelse --}}
                 </tbody>
             </table>
         </div>
@@ -79,13 +80,37 @@
 @push('js')
     <script>
         $(document).ready(function() {
+            // Fetching the todos data
+            fetchTodo();
+
+            function fetchTodo() {
+                $.ajax({
+                    type: "GET",
+                    url: "fetch-todos",
+                    dataType: "json",
+                    success: function(response) {
+                        $('#todo-list').html('');
+                        $.each(response.todos, function(key, item) {
+                            $('#todo-list').append('<tr>\
+                                                    <td>' + item.id + '</td>\
+                                                    <td>' + item.title + '</td>\
+                                                    <td>' + item.description + '</td>\
+                                                    <td>\
+                                                        <button value="' + item.id + '" class="edit-todo btn btn-primary btn-sm">Edit</button>\
+                                                        <button value="' + item.id + '" class="delete-todo btn btn-danger btn-sm">Edit</button>\
+                                                    </td>\
+                                                </tr>');
+                        });
+                    }
+                });
+            }
+
             $(document).on('click', '.submit-form', function(e) {
                 e.preventDefault();
                 var data = {
                     'title': $('.title').val(),
                     'description': $('.description').val(),
                 };
-                console.log(data);
 
                 $.ajaxSetup({
                     headers: {
@@ -99,7 +124,6 @@
                     data: data,
                     dataType: "json",
                     success: function(response) {
-                        console.log(response);
                         if (response.status == 400) {
                             $('.formErrors').html('');
                             $('.formErrors').addClass('alert alert-danger');
@@ -112,6 +136,8 @@
                             $('.formSuccess').text(response.message);
                             $('#formModal').modal('hide');
                             $('#formModal').find('input').val('');
+                            $('.formErrors').removeClass('alert alert-danger');
+                            fetchTodo();
                         }
                     }
                 });

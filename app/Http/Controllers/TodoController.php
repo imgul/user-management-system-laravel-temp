@@ -14,6 +14,12 @@ class TodoController extends Controller
         return view('front.pages.todos.index', compact('todos'));
     }
 
+    public function fetchTodo()
+    {
+        $todos = Todo::latest()->get();
+        return response()->json(['todos' => $todos]);
+    }
+
     public function store(Request $request)
     {
         // ====> Returns Array <==== //
@@ -42,7 +48,7 @@ class TodoController extends Controller
             $todo->save();
             return response()->json([
                 'status' => 200,
-                'message' => 'Todo Added Successfully.'
+                'message' => 'Task Added Successfully.'
             ]);
         }
     }
