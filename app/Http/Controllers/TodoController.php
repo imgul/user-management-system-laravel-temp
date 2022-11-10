@@ -20,7 +20,7 @@ class TodoController extends Controller
         return response()->json(['todos' => $todos]);
     }
 
-    public function editTodo($id)
+    public function edit($id)
     {
         $todo = Todo::find($id);
         if ($todo) {
@@ -69,7 +69,7 @@ class TodoController extends Controller
         }
     }
 
-    public function updateTodo(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required',
@@ -97,6 +97,23 @@ class TodoController extends Controller
                     'message' => 'Todo Not Found!'
                 ]);
             }
+        }
+    }
+
+    public function destroy($id)
+    {
+        $todo = Todo::find($id);
+        if ($todo) {
+            $todo->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Task Deleted Successfully.'
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Todo Not Found!'
+            ]);
         }
     }
 }

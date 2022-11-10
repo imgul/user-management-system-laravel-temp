@@ -113,6 +113,35 @@
         </div>
     </div>
     <!-- ========= End - Edit Todo Modal ======== -->
+
+
+    <!-- ========= Start - Delete Todo Modal ======== -->
+    <div class="modal fade" id="deleteTodoModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitleId">Delete Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="deleteFormErrors"></ul>
+                    {{-- Form Start --}}
+                    <form id="deleteTodoForm">
+                        <input type="hidden" name="deleteTodoId" id="deleteTodoId">
+                        <h4>Are you sure? Want to Delete Todo?</h4>
+                    </form>
+                    {{-- Form End --}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger delete-submit-form" form="deleteTodoForm">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ========= End - Delete Todo Modal ======== -->
+
 @endsection
 
 @push('js')
@@ -256,7 +285,7 @@
                 });
 
                 $.ajax({
-                    type: "POST",
+                    type: "PUT",
                     url: "todo/update/"+$('#editTodoId').val(),
                     data: data,
                     dataType: "json",
@@ -274,6 +303,45 @@
                             $('#editTodoModal').modal('hide');
                             $('#editTodoModal').find('input').val('');
                             $('.editFormErrors').removeClass('alert alert-danger');
+                            fetchTodo();
+                        }
+                    }
+                });
+            });
+
+
+            $(document).on('click', '.delete-todo', function (e) {
+                e.preventDefault();
+                let todoId = $(this).val();
+                $('#deleteTodoId').val(todoId);
+                $('#deleteTodoModal').modal('show');
+            });
+
+            $(document).on('click', '.delete-submit-form', function (e) {
+                e.preventDefault();
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                
+                $.ajax({
+                    type: "DELETE",
+                    url: "todo/delete/"+$('#deleteTodoId').val(),
+                    dataType: "json",
+                    success: function (response) {
+                        if(response.status == 404) {
+                            $('#deleteFormErrors').html('');
+                            $('#deleteFormErrors').addClass('alert alert-danger');
+                            $('#deleteFormErrors').text(response.message);
+                        } else {
+                            $('.deleteFormErrors').html('');
+                            $('.formSuccess').addClass('alert alert-success');
+                            $('.formSuccess').text(response.message);
+                            $('#deleteTodoModal').modal('hide');
+                            $('#deleteTodoModal').find('input').val('');
+                            $('.deleteFormErrors').removeClass('alert alert-danger');
                             fetchTodo();
                         }
                     }

@@ -29,6 +29,7 @@ Route::controller(TodoController::class)->group(function () {
     Route::get('/todo', 'index')->name('todo.index');
     Route::post('/todo', 'store')->name('todo.store');
     Route::get('/fetch-todos', 'fetchTodo')->name('todo.fetch');
-    Route::get('/todo/edit/{id}', 'editTodo')->name('todo.edit');
-    Route::post('/todo/update/{id}', 'updateTodo')->name('todo.update');
+    Route::get('/todo/edit/{id}', 'edit')->name('todo.edit');
+    Route::put('/todo/update/{id}', 'update')->name('todo.update');
+    Route::delete('/todo/delete/{id}', 'destroy')->name('todo.delete');
 });
