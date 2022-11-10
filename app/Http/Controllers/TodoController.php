@@ -20,6 +20,22 @@ class TodoController extends Controller
         return response()->json(['todos' => $todos]);
     }
 
+    public function editTodo($id)
+    {
+        $todo = Todo::find($id);
+        if ($todo) {
+            return response()->json([
+                'status' => 200,
+                'todo' => $todo
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Todo Not Found!'
+            ]);
+        }
+    }
+
     public function store(Request $request)
     {
         // ====> Returns Array <==== //
@@ -50,6 +66,37 @@ class TodoController extends Controller
                 'status' => 200,
                 'message' => 'Task Added Successfully.'
             ]);
+        }
+    }
+
+    public function updateTodo(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'description' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'errors' => $validator->messages()
+            ]);
+        } else {
+            $todo = Todo::find($id);
+            if ($todo) {
+                $todo->title = $request->title;
+                $todo->description = $request->description;
+                $todo->update();
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Task Edited Successfully.'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'Todo Not Found!'
+                ]);
+            }
         }
     }
 }
